@@ -1,0 +1,41 @@
+{
+  "name": "aor-jsonapi-client",
+  "version": "0.2.0",
+  "description": "JSON API REST Client for Admin-on-rest",
+  "main": "./build/restClient.js",
+  "scripts": {
+    "build": "babel --presets es2015 src --out-dir build",
+    "prepare": "npm run build",
+    "test": "echo \\\\\\\"Error: no test specified\\\\\\\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moonlight-labs/aor-jsonapi-client.git"
+  },
+  "keywords": [
+    "react",
+    "admin-on-rest",
+    "json-api",
+    "rest-client"
+  ],
+  "author": "Max Schridde",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moonlight-labs/aor-jsonapi-client/issues"
+  },
+  "homepage": "https://github.com/moonlight-labs/aor-jsonapi-client#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-syntax-object-rest-spread": "^6.13.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-react": "^6.23.0",
+    "eslint-config-prettier": "^2.9.0"
+  },
+  "engines": {
+    "npm": ">=4.0.0"
+  }
+}
