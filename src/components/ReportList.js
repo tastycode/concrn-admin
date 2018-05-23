@@ -7,8 +7,7 @@ export const ReportList = (props) => (
       <TextField source="id" label="ID"/>
       <TextField source="created-at" label="Created at"/>
       <TextField source="address" label="Address"/>
-      <TextField source="reporter.user.name" label="Reporter name"/>
-
+      <TextField source="status" label="Status"/>
     </Datagrid>
   </List>
 )
