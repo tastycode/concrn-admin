@@ -10,7 +10,7 @@ import {
 
 import { jsonApiHttpClient, queryParameters } from "./fetch";
 
-const mapSingleRecord = (allData, singleRecord) => {
+export const mapSingleRecord = (allData, singleRecord) => {
   let result = {
     id: singleRecord.id,
     ...singleRecord.attributes
@@ -18,17 +18,20 @@ const mapSingleRecord = (allData, singleRecord) => {
   if (singleRecord.relationships) {
     Object.keys(singleRecord.relationships).forEach(function(key) {
       const resolvedRelationship = resolveRelationship(allData, singleRecord.relationships[key])
-      const keyString = key + "_id";
       if (resolvedRelationship) {
         result[key] = resolvedRelationship
       }
-      result[keyString] = singleRecord.relationships[key].data.id;
+      const relationshipData = singleRecord.relationships[key].data
+      if (relationshipData) {
+        const keyString = key + "_id";
+        result[keyString] = relationshipData.id;
+      }
     })
   }
   return result
 }
 
-const resolveRelationship = (allData, relationship) => {
+export const resolveRelationship = (allData, relationship) => {
   if (typeof(relationship.data) === 'undefined') {
     // for some reason, the JSON  being passed through here is different than the JSON returned from the server.
     // instead of relationship = { data: { type: 'users', id: 1 }}, we are seeing the user record itself in the relationship hash
@@ -206,7 +209,6 @@ export default (apiUrl, httpClient = jsonApiHttpClient) => {
       convertHTTPResponseToREST(response, type, resource, params)
     ).catch(error => {
       console.log('restClient:catch', error)
-      debugger
       if (error.body && error.body.errors) {
         const errorMessage = error.body.errors.map( error => error.detail ).join(',')
         throw errorMessage

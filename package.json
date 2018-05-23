@@ -6,10 +6,12 @@
     "aor-jsonapi-client": "^0.2.0",
     "global": "^4.3.2",
     "import-js": "^3.0.0",
+    "ramda": "^0.25.0",
     "react": "^16.3.2",
     "react-admin": "^2.0.0-RC3",
     "react-dom": "^16.3.2",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "styled-components": "^3.2.6"
   },
   "scripts": {
     "start": "react-scripts start",

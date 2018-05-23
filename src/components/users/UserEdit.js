@@ -1,79 +1,53 @@
 import React from 'react';
 import {
-  CreateButton,
-  Datagrid,
-  DeleteButton,
-  EditButton,
   Edit,
-  FormTab,
-  ReferenceManyField,
-  SelectField,
+  ReferenceInput,
+  SelectInput,
   SimpleForm,
-  TabbedForm,
   TextField,
   TextInput,
   required,
-  showNotification
+  showNotification,
 } from 'react-admin';
 
-function debug(something) { debugger }
+import * as R from 'ramda'
 
-const CreateAffiliateUserButton = props => (
-  <CreateButton
-    {...props}
-    resource="admin/affiliate_users"
-    label="Join affiliate"
-    to={{
-      pathname: '/admin/affiliate_users/create',
-      state: {record: {user_id: props.record.id}},
-    }}
-  />
-);
-
-const EditAffiliateUserButton = props => {
-  const { userId } = props
-  return <EditButton
-    resource="admin/affiliate_users"
-    to={{
-      pathname: '/admin/affiliate_users/create',
-      state: {record: {user_id: 5 }},
-    }}
-  />
-}
+import {validChoicesForRole} from 'lib/helpers';
+import HiddenInput from 'components/HiddenInput';
+import withAuthContext from 'components/withAuthContext'
 
 
-const UserEditTitle = ({ record }) => <span>Update User: {record.name}</span>
-const UserEdit = props => {
-  const { id: userId } = props.match.params
+const UserEditTitle = ({record}) => <span>Update User: {record.name}</span>;
+const UserEdit = ({auth, ...props}) => {
+  const {id: userId} = props.match.params;
+  const affiliateAdminInputs = () => (
+    <HiddenInput source="affiliate_id" defaultValue={R.path(['affiliate', 'id'], auth)} />
+  );
+  const adminInputs = (props) => {
+    return (
+      <ReferenceInput {...props} source="affiliate_id" reference="admin/affiliates" defaultValue={R.path(['affiliate', 'id'], auth)}>
+        <SelectInput optionText="name" />
+      </ReferenceInput>
+    );
+  };
+  const AffiliateInput = auth.affiliate ? affiliateAdminInputs : adminInputs
   return (
-    <Edit {...props} title={<UserEditTitle/>}>
-      <TabbedForm>
-        <FormTab label="Basics">
-          <TextInput source="name" validate={[required()]} />
-          <TextInput source="phone" validate={[required()]} />
-          <TextInput source="email" validate={[required()]} />
-          <TextInput source="password" type="password" validate={[required()]} />
-        </FormTab>
-        <FormTab label="Affiliates">
-          <CreateAffiliateUserButton/>
-          <ReferenceManyField
-            reference="admin/affiliate_users"
-            target="user_id"
-            addLabel={false}>
-            <Datagrid>
-              <TextField source="affiliate.name" />
-              <SelectField
-                source="role"
-                choices={[{id: 'admin', name: 'Admin'}, {id: 'dispatcher', name: 'Dispatcher'}, {id: 'responder', name: 'Responder'}]}
-              />
-              <EditButton />
-              <DeleteButton redirect={`/admin/users/${userId}`}/>
-            </Datagrid>
-          </ReferenceManyField>
-        </FormTab>
-      </TabbedForm>
+    <Edit {...props} title={<UserEditTitle />}>
+      <SimpleForm redirect="list">
+        <TextInput source="name" validate={[required()]} />
+        <TextInput source="phone" validate={[required()]} />
+        <TextInput source="email" validate={[required()]} />
+        <TextInput source="password" type="password" validate={[required()]} />
+        <AffiliateInput/>
+        <SelectInput
+            defaultValue="responder"
+            source="role"
+            label="Role"
+            choices={validChoicesForRole(auth.role)}
+          />
+      </SimpleForm>
     </Edit>
   );
 };
 
-export default UserEdit;
+export default withAuthContext(UserEdit);
