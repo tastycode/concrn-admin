@@ -32,7 +32,7 @@ export const mapSingleRecord = (allData, singleRecord) => {
 }
 
 export const resolveRelationship = (allData, relationship) => {
-  if (typeof(relationship.data) === 'undefined') {
+  if (!relationship.data) {
     // for some reason, the JSON  being passed through here is different than the JSON returned from the server.
     // instead of relationship = { data: { type: 'users', id: 1 }}, we are seeing the user record itself in the relationship hash
     // if that's the case, just assume the relationship as resolved since we don't have the type or ID to find it in `included` anyway
