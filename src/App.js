@@ -1,10 +1,13 @@
 import React, {Component} from 'react';
 import {fetchUtils, Admin, Resource} from 'react-admin';
 import jsonAPIRestClient from './jsonapi-client/src/restClient';
+import * as R from 'ramda'
 
+import envConfig from './envConfig'
 import logo from './logo.svg';
 import './App.css';
-import {ReportList} from './components/ReportList';
+import {ReportList,
+ReportShow} from './components/reports';
 
 import {
   AffiliateList,
@@ -33,7 +36,7 @@ const httpClient = (url, options = {}) => {
   return fetchUtils.fetchJson(url, options);
 };
 
-const restClient = jsonAPIRestClient('http://localhost:3000', httpClient);
+const restClient = jsonAPIRestClient(envConfig.CONCRN_API_URL, httpClient);
 
 class App extends Component {
   state = {
@@ -48,13 +51,13 @@ class App extends Component {
     // so we'll just reload so we can set the initial state from localStorage
     // this approach causes a flicker, but seems to be the only way
     // to get auth's values accessible to children deep in the app
-    window.location.reload(true);
+    window.location.reload("/")
   };
 
   render() {
     const auth = {
       ...this.state.auth,
-      isAffiliate: /affiliate_/.test(this.state.auth.role)
+      isAffiliate: /affiliate_/.test(R.path(['auth', 'role'], this.state))
     }
     const title = auth.affiliate ? `Concrn: ${auth.affiliate.name}` : 'Concrn';
     return (
@@ -73,6 +76,7 @@ class App extends Component {
           <Resource
             name="admin/reports"
             list={ReportList}
+            show={ReportShow}
             options={{label: 'Reports'}}
           />
           <Resource

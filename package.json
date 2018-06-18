@@ -15,7 +15,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build:staging": "REACT_APP_CONCRN_API_URL=https://concrn-staging-api.herokuapp.com react-scripts build",
+    "deploy:staging": "aws s3 sync build s3://staging-admin.concrn.com --delete --profile claudia",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }

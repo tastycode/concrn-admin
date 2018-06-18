@@ -41,8 +41,13 @@ export const resolveRelationship = (allData, relationship) => {
 
   const allDataIncluded = allData.included || []
   const foundRelationship = allDataIncluded.find( includedRecord => {
+    try {
+
       return includedRecord.type === relationship.data.type &&
         includedRecord.id === relationship.data.id
+    } catch (e) {
+      debugger
+    }
   })
   if (!foundRelationship) {
     return
@@ -204,11 +209,12 @@ export default (apiUrl, httpClient = jsonApiHttpClient) => {
    * @returns {Promise} the Promise for a REST response
    */
   return (type, resource, params) => {
+    console.info('restClient:request', type, resource, params);
     const { url, options } = convertRESTRequestToHTTP(type, resource, params);
     return httpClient(url, options).then(response =>
       convertHTTPResponseToREST(response, type, resource, params)
     ).catch(error => {
-      console.log('restClient:catch', error)
+      console.warn('restClient:catch', error)
       if (error.body && error.body.errors) {
         const errorMessage = error.body.errors.map( error => error.detail ).join(',')
         throw errorMessage
