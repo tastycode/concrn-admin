@@ -1,17 +1,13 @@
-import { AUTH_LOGIN, AUTH_ERROR } from 'react-admin'
+import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR } from 'react-admin'
 import authManager from './authManager'
 import { mapSingleRecord } from './jsonapi-client/src/restClient'
 import envConfig from './envConfig'
 
 export async function login(type, params) {
-  switch(type) {
-      case AUTH_LOGIN:
-        handleLogin(type, params)
-        break;
-      case AUTH_ERROR:
-        throw "AUTH_ERROR"
-        break;
-  }
+}
+
+function handleLogout() {
+  authManager.clear()
 }
 
 async function handleLogin(type, params) {
@@ -33,9 +29,18 @@ async function handleLogin(type, params) {
   return loginResponse
 }
 
-export function configureAuth({ callback }) {
+export function configureAuth() {
   return async (type, params) => {
-    const response = await login(type, params)
-    response && callback(response)
+    switch(type) {
+        case AUTH_LOGIN:
+          return await handleLogin(type, params)
+          break;
+        case AUTH_LOGOUT:
+          return handleLogout()
+          break;
+        case AUTH_ERROR:
+          throw "AUTH_ERROR"
+          break;
+    }
   }
 }

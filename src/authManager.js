@@ -7,7 +7,12 @@ export const read = () => {
   return storedAuth && JSON.parse(storedAuth)
 }
 
+export const clear = () => {
+  localStorage.removeItem('auth')
+}
+
 export default {
+  clear,
   read,
   write
 }
