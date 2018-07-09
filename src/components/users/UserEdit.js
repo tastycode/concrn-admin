@@ -1,14 +1,24 @@
 import React from 'react';
 import {
+  ArrayInput,
+  Button,
+  CreateButton,
+  DeleteButton,
+  FormDataConsumer,
+  Datagrid,
   Edit,
+  EditButton,
   ReferenceInput,
   SelectInput,
   SimpleForm,
+  SimpleFormIterator,
+  ReferenceManyField,
   TextField,
   TextInput,
   required,
   showNotification,
 } from 'react-admin';
+import { Link } from "react-router-dom"
 
 import * as R from 'ramda'
 
@@ -17,7 +27,9 @@ import HiddenInput from 'components/HiddenInput';
 import withAuthContext from 'components/withAuthContext'
 
 
-const UserEditTitle = ({record}) => <span>Update User: {record.name}</span>;
+const UserEditTitle = ({record}) => {
+  return <span>Update User: {record.name}</span>;
+}
 const UserEdit = ({auth, ...props}) => {
   const {id: userId} = props.match.params;
   const affiliateAdminInputs = () => (
@@ -30,6 +42,45 @@ const UserEdit = ({auth, ...props}) => {
       </ReferenceInput>
     );
   };
+
+  const CreateZipButton = props => {
+    return <Button
+      component={Link}
+      to={{
+        pathname: `/admin/zip_fences/create`,
+        state: {
+          record: {
+            fenceable_type: "Responder",
+            fenceable_id: props.record.responder.id,
+          },
+          redirect: `/admin/users/${props.record.id}`,
+        }
+      }}>Add Zip</Button>
+  }
+
+  const EditZipButton = props => {
+    return <Button
+      component={Link}
+      to={{
+        pathname: `/admin/zip_fences/${props.record.id}`,
+        state: {
+          redirect: `/admin/users/${props.record.id}`,
+        }
+      }}>Edit Zip</Button>
+  }
+
+  const ZipInputs = ({record, ...props}) => {
+      record["responder_id"] = record.responder.id
+      return <ReferenceManyField label="Zip Codes" filter={{fenceable_type: "Responder"}} reference="admin/zip_fences" target="fenceable_id" source="responder_id" record={record} {...props}>
+        <Datagrid>
+          <TextField source="zip"/>
+          <EditZipButton/>
+          <DeleteButton redirect={`/admin/users/${record.id}`}/>
+        </Datagrid>
+      </ReferenceManyField>
+  }
+
+
   const AffiliateInput = auth.affiliate ? affiliateAdminInputs : adminInputs
   return (
     <Edit {...props} title={<UserEditTitle />}>
@@ -37,7 +88,7 @@ const UserEdit = ({auth, ...props}) => {
         <TextInput source="name" validate={[required()]} />
         <TextInput source="phone" validate={[required()]} />
         <TextInput source="email" validate={[required()]} />
-        <TextInput source="password" type="password" validate={[required()]} />
+        <TextInput source="password" type="password" />
         <AffiliateInput/>
         <SelectInput
             defaultValue="responder"
@@ -45,6 +96,13 @@ const UserEdit = ({auth, ...props}) => {
             label="Role"
             choices={validChoicesForRole(auth.role)}
           />
+          <FormDataConsumer>
+            {({formData, ...rest}) => {
+              return formData.role === "affiliate_responder" && <ZipInputs {...rest}/>
+
+            }}
+          </FormDataConsumer>
+          <CreateZipButton/>
       </SimpleForm>
     </Edit>
   );

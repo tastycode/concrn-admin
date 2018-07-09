@@ -21,6 +21,11 @@ import {
   UserEdit,
 } from './components/users';
 
+import {
+  ZipFenceCreate,
+  ZipFenceEdit
+} from './components/zip_fences'
+
 import {configureAuth} from './authProvider';
 import authManager from './authManager';
 import AuthContext from './components/AuthContext';
@@ -74,6 +79,11 @@ class App extends Component {
             edit={UserEdit}
             create={UserCreate}
             options={{label: 'Users'}}
+          />
+          <Resource
+            name="admin/zip_fences"
+            create={ZipFenceCreate}
+            edit={ZipFenceEdit}
           />
         </Admin>
       </AuthContext.Provider>
