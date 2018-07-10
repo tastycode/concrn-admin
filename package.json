@@ -17,6 +17,7 @@
     "start": "react-scripts start",
     "build:staging": "REACT_APP_CONCRN_API_URL=https://concrn-staging-api.herokuapp.com react-scripts build",
     "deploy:staging": "aws s3 sync build s3://staging-admin.concrn.com --delete --profile claudia",
+    "purge:staging": "aws cloudfront create-invalidation --distribution-id E2PYT6WSCK5USD --profile claudia --paths /*",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
