@@ -51,9 +51,9 @@ const UserEdit = ({auth, ...props}) => {
         state: {
           record: {
             fenceable_type: "Responder",
-            fenceable_id: props.record.responder.id,
+            fenceable_id: R.path(['record', 'responder', 'id'], props),
           },
-          redirect: `/admin/users/${props.record.id}`,
+          redirect: `/admin/users/${R.path(['record', 'id'], props)}`,
         }
       }}>Add Zip</Button>
   }
@@ -70,14 +70,21 @@ const UserEdit = ({auth, ...props}) => {
   }
 
   const ZipInputs = ({record, ...props}) => {
+    debugger
+    if (!record.responder) {
+      return <div>Please save this user to finish converting the user to a responder</div>
+    }
       record["responder_id"] = record.responder.id
-      return <ReferenceManyField label="Zip Codes" filter={{fenceable_type: "Responder"}} reference="admin/zip_fences" target="fenceable_id" source="responder_id" record={record} {...props}>
-        <Datagrid>
-          <TextField source="zip"/>
-          <EditZipButton/>
-          <DeleteButton redirect={`/admin/users/${record.id}`}/>
-        </Datagrid>
-      </ReferenceManyField>
+      return <React.Fragment>
+        <ReferenceManyField label="Zip Codes" filter={{fenceable_type: "Responder"}} reference="admin/zip_fences" target="fenceable_id" source="responder_id" record={record} {...props}>
+          <Datagrid>
+            <TextField source="zip"/>
+            <EditZipButton/>
+            <DeleteButton redirect={`/admin/users/${record.id}`}/>
+          </Datagrid>
+        </ReferenceManyField>
+        <CreateZipButton/>
+      </React.Fragment>
   }
 
 
@@ -102,7 +109,6 @@ const UserEdit = ({auth, ...props}) => {
 
             }}
           </FormDataConsumer>
-          <CreateZipButton/>
       </SimpleForm>
     </Edit>
   );
