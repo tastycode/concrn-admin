@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   ArrayInput,
   Button,
@@ -16,79 +16,108 @@ import {
   TextField,
   TextInput,
   required,
-  showNotification,
-} from 'react-admin';
-import { Link } from "react-router-dom"
+  showNotification
+} from "react-admin";
+import { Link } from "react-router-dom";
 
-import * as R from 'ramda'
+import * as R from "ramda";
 
-import {validChoicesForRole} from 'lib/helpers';
-import HiddenInput from 'components/HiddenInput';
-import withAuthContext from 'components/withAuthContext'
+import { validChoicesForRole } from "lib/helpers";
+import HiddenInput from "components/HiddenInput";
+import withAuthContext from "components/withAuthContext";
 
-
-const UserEditTitle = ({record}) => {
+const UserEditTitle = ({ record }) => {
   return <span>Update User: {record.name}</span>;
-}
-const UserEdit = ({auth, ...props}) => {
-  const {id: userId} = props.match.params;
+};
+const UserEdit = ({ auth, ...props }) => {
+  const { id: userId } = props.match.params;
   const affiliateAdminInputs = () => (
-    <HiddenInput source="affiliate_id" defaultValue={R.path(['affiliate', 'id'], auth)} />
+    <HiddenInput
+      source="affiliate_id"
+      defaultValue={R.path(["affiliate", "id"], auth)}
+    />
   );
-  const adminInputs = (props) => {
+  const adminInputs = props => {
     return (
-      <ReferenceInput {...props} source="affiliate_id" reference="admin/affiliates" defaultValue={R.path(['affiliate', 'id'], auth)}>
+      <ReferenceInput
+        {...props}
+        source="affiliate_id"
+        reference="admin/affiliates"
+        defaultValue={R.path(["affiliate", "id"], auth)}
+      >
         <SelectInput optionText="name" />
       </ReferenceInput>
     );
   };
 
   const CreateZipButton = props => {
-    return <Button
-      component={Link}
-      to={{
-        pathname: `/admin/zip_fences/create`,
-        state: {
-          record: {
-            fenceable_type: "Responder",
-            fenceable_id: R.path(['record', 'responder', 'id'], props),
-          },
-          redirect: `/admin/users/${R.path(['record', 'id'], props)}`,
-        }
-      }}>Add Zip</Button>
-  }
+    return (
+      <Button
+        component={Link}
+        to={{
+          pathname: `/admin/zip_fences/create`,
+          state: {
+            record: {
+              fenceable_type: "Responder",
+              fenceable_id: R.path(["record", "responder", "id"], props)
+            },
+            redirect: `/admin/users/${R.path(["record", "id"], props)}`
+          }
+        }}
+      >
+        Add Zip
+      </Button>
+    );
+  };
 
   const EditZipButton = props => {
-    return <Button
-      component={Link}
-      to={{
-        pathname: `/admin/zip_fences/${props.record.id}`,
-        state: {
-          redirect: `/admin/users/${props.record.id}`,
-        }
-      }}>Edit Zip</Button>
-  }
+    return (
+      <Button
+        component={Link}
+        to={{
+          pathname: `/admin/zip_fences/${props.record.id}`,
+          state: {
+            redirect: `/admin/users/${props.record.id}`
+          }
+        }}
+      >
+        Edit Zip
+      </Button>
+    );
+  };
 
-  const ZipInputs = ({record, ...props}) => {
-    debugger
+  const ZipInputs = ({ record, ...props }) => {
     if (!record.responder) {
-      return <div>Please save this user to finish converting the user to a responder</div>
+      return (
+        <div>
+          Please save this user to finish converting the user to a responder
+        </div>
+      );
     }
-      record["responder_id"] = record.responder.id
-      return <React.Fragment>
-        <ReferenceManyField label="Zip Codes" filter={{fenceable_type: "Responder"}} reference="admin/zip_fences" target="fenceable_id" source="responder_id" record={record} {...props}>
+    record["responder_id"] = record.responder.id;
+    return (
+      <React.Fragment>
+        <ReferenceManyField
+          label="Zip Codes"
+          filter={{ fenceable_type: "Responder" }}
+          reference="admin/zip_fences"
+          target="fenceable_id"
+          source="responder_id"
+          record={record}
+          {...props}
+        >
           <Datagrid>
-            <TextField source="zip"/>
-            <EditZipButton/>
-            <DeleteButton redirect={`/admin/users/${record.id}`}/>
+            <TextField source="zip" />
+            <EditZipButton />
+            <DeleteButton redirect={`/admin/users/${record.id}`} />
           </Datagrid>
         </ReferenceManyField>
-        <CreateZipButton/>
+        <CreateZipButton />
       </React.Fragment>
-  }
+    );
+  };
 
-
-  const AffiliateInput = auth.affiliate ? affiliateAdminInputs : adminInputs
+  const AffiliateInput = auth.affiliate ? affiliateAdminInputs : adminInputs;
   return (
     <Edit {...props} title={<UserEditTitle />}>
       <SimpleForm redirect="list">
@@ -96,19 +125,20 @@ const UserEdit = ({auth, ...props}) => {
         <TextInput source="phone" validate={[required()]} />
         <TextInput source="email" validate={[required()]} />
         <TextInput source="password" type="password" />
-        <AffiliateInput/>
+        <AffiliateInput />
         <SelectInput
-            defaultValue="responder"
-            source="role"
-            label="Role"
-            choices={validChoicesForRole(auth.role)}
-          />
-          <FormDataConsumer>
-            {({formData, ...rest}) => {
-              return formData.role === "affiliate_responder" && <ZipInputs {...rest}/>
-
-            }}
-          </FormDataConsumer>
+          defaultValue="responder"
+          source="role"
+          label="Role"
+          choices={validChoicesForRole(auth.role)}
+        />
+        <FormDataConsumer>
+          {({ formData, ...rest }) => {
+            return (
+              formData.role === "affiliate_responder" && <ZipInputs {...rest} />
+            );
+          }}
+        </FormDataConsumer>
       </SimpleForm>
     </Edit>
   );

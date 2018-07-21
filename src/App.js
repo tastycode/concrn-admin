@@ -85,6 +85,8 @@ class App extends Component {
             create={ZipFenceCreate}
             edit={ZipFenceEdit}
           />
+          <Resource
+            name="admin/report_events"/>
         </Admin>
       </AuthContext.Provider>
     );
