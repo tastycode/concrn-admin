@@ -112,7 +112,7 @@ const UserEdit = ({ auth, ...props }) => {
             <DeleteButton redirect={`/admin/users/${record.id}`} />
           </Datagrid>
         </ReferenceManyField>
-        <CreateZipButton />
+        <CreateZipButton record={record} />
       </React.Fragment>
     );
   };
