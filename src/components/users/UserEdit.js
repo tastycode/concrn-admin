@@ -51,6 +51,7 @@ const UserEdit = ({ auth, ...props }) => {
   };
 
   const CreateZipButton = props => {
+    console.log("CreateZipButton", props);
     return (
       <Button
         component={Link}

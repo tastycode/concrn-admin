@@ -8,7 +8,6 @@ import {
 } from 'react-admin'
 
 const CommonFields = (props) => {
-
   return <SimpleForm {...props}
       redirect={props.location.state.redirect}
       defaultValue={{
