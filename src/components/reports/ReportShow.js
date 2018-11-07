@@ -13,11 +13,18 @@ import {
   ChipField,
   Datagrid,
   DateField,
+  ReferenceField,
   ReferenceManyField,
-  SimpleShowLayout,
+  Tab,
+  TabbedShowLayout,
   Show,
   TextField
 } from "react-admin";
+
+import DispatchDismissButton from "./buttons/DispatchDismissButton";
+import DispatchAcceptButton from "./buttons/DispatchAcceptButton";
+import DispatchArrivedButton from "./buttons/DispatchArrivedButton";
+import DispatchCloseButton from "./buttons/DispatchCloseButton";
 
 const ReportTitle = ({ record }) => <span>Report #{record.id}</span>;
 const LayoutTest = styled.div`
@@ -201,25 +208,46 @@ const ReportShowActions = ({ basePath, data, resource }) => {};
 const ReportShow = props => {
   return (
     <Show {...props} title={<ReportTitle />}>
-      <SimpleShowLayout>
-        <ChipField source="status" label="status" />
-        <TextField source="address" label="Address" />
-        <DateField source="created-at" label="Date" showTime />
-        <ReferenceManyField
-          label="History"
-          reference="admin/report_events"
-          target="report_id"
-          source="id"
-        >
-          <Datagrid>
-            <DateField showTime source="created-at" label="Date" />
-            <FriendlyEventField source="event-type" label="Event" />
-            <DetailsField source="payload" label="Details" />
-          </Datagrid>
-        </ReferenceManyField>
-        <CreateDispatchButton />
-        <CreateNoteButton />
-      </SimpleShowLayout>
+      <TabbedShowLayout>
+        <Tab label="Summary">
+          <ChipField source="status" label="status" />
+          <TextField source="address" label="Address" />
+          <DateField source="created-at" label="Date" showTime />
+          <ReferenceManyField
+            label="History"
+            reference="admin/report_events"
+            target="report_id"
+            source="id"
+          >
+            <Datagrid>
+              <DateField showTime source="created-at" label="Date" />
+              <FriendlyEventField source="event-type" label="Event" />
+              <DetailsField source="payload" label="Details" />
+            </Datagrid>
+          </ReferenceManyField>
+          <CreateDispatchButton />
+          <CreateNoteButton />
+        </Tab>
+        <Tab label="Dispatches">
+          <ReferenceManyField
+            label="Dispatches"
+            reference="admin/dispatches"
+            target="report_id"
+            source="id"
+          >
+            <Datagrid>
+              <DateField showTime source="created-at" label="Date" />
+              <ChipField source="dispatch-type" label="Type" />
+              <ChipField source="status" label="Status" />
+              <TextField source="responder.user.name" label="Responder" />
+              <DispatchDismissButton />
+              <DispatchAcceptButton />
+              <DispatchArrivedButton />
+              <DispatchCloseButton />
+            </Datagrid>
+          </ReferenceManyField>
+        </Tab>
+      </TabbedShowLayout>
     </Show>
   );
 };

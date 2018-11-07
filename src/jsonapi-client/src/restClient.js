@@ -32,7 +32,8 @@ export const mapSingleRecord = (allData, singleRecord) => {
   return result
 }
 
-export const resolveRelationship = (allData, relationship) => {
+const DEPTH_MAX = 3
+export const resolveRelationship = (allData, relationship, depth = 0) => {
 
   if (R.is(Array, relationship.data)) { // handle nested collections
     return relationship.data
@@ -45,20 +46,16 @@ export const resolveRelationship = (allData, relationship) => {
 
   const allDataIncluded = allData.included || []
   const foundRelationship = allDataIncluded.find( includedRecord => {
-    try {
-
       return includedRecord.type === relationship.data.type &&
         includedRecord.id === relationship.data.id
-    } catch (e) {
-      debugger
-    }
   })
+
   if (!foundRelationship) {
     return
   }
   for (let relationshipKey of Object.keys(foundRelationship.relationships || [])) {
     let subRelationship = foundRelationship.relationships[relationshipKey]
-    const resolvedSubRelationship = resolveRelationship(allData, subRelationship)
+    const resolvedSubRelationship = depth < DEPTH_MAX ? resolveRelationship(allData, subRelationship, depth + 1) : null
     if (resolvedSubRelationship) {
       foundRelationship.relationships[relationshipKey] = resolvedSubRelationship
     }

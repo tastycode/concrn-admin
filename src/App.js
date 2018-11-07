@@ -83,6 +83,8 @@ class App extends Component {
           />
           <Resource name="admin/report_notes" create={ReportNoteCreate} />
           <Resource name="admin/report_events" />
+          <Resource name="admin/dispatches" />
+          <Resource name="admin/responders" />
           <Resource create={DispatchCreate} name="dispatches" />
         </Admin>
       </AuthContext.Provider>

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "material-ui": "1.0.0-beta.42",
     "aor-jsonapi-client": "^0.2.0",
     "global": "^4.3.2",
     "import-js": "^3.0.0",
