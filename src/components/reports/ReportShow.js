@@ -164,6 +164,8 @@ const DetailsField = ({ record }) => {
 
 const CreateDispatchButton = props => {
   const reportId = R.path(["record", "id"], props);
+  if (!["NEW", "CLOSED", "DISMISSED"].includes(props.record.status))
+    return null;
   return (
     <Button
       component={Link}

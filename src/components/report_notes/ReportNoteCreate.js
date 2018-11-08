@@ -1,5 +1,11 @@
 import React from "react";
-import { Create, SimpleForm, LongTextInput, required } from "react-admin";
+import {
+  BooleanInput,
+  Create,
+  SimpleForm,
+  LongTextInput,
+  required
+} from "react-admin";
 
 const ReportNoteCreate = props => {
   const reportId =
@@ -12,6 +18,7 @@ const ReportNoteCreate = props => {
           report_id: reportId
         }}
       >
+        <BooleanInput source="notify_reporter" label="Notify Reporter?" />
         <LongTextInput source="notes" validate={[required()]} />
       </SimpleForm>
     </Create>
