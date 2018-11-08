@@ -43,6 +43,17 @@ class App extends Component {
     auth: authManager.read()
   };
 
+  onLogin = loginResponse => {
+    // the intention here was to set state for the AuthContext
+    // however, changing the value of the AuthContext.Provider
+    // would cause the redux store and router to update
+    // which would cause react-admin to choke
+    // so we'll just reload so we can set the initial state from localStorage
+    // this approach causes a flicker, but seems to be the only way
+    // to get auth's values accessible to children deep in the app
+    window.location.reload("/");
+  };
+
   render() {
     const auth = {
       ...this.state.auth,
@@ -52,7 +63,7 @@ class App extends Component {
     return (
       <AuthContext.Provider value={auth}>
         <Admin
-          authProvider={configureAuth()}
+          authProvider={configureAuth({callback: this.onLogin})}
           dataProvider={restClient}
           title={title}
         >
